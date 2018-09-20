@@ -1,0 +1,130 @@
+﻿@model OuEstMonCamion.Models.TruckModel
+@{
+    ViewData["Title"] = "Home Page";
+    int imarker = 0;
+}
+
+<br />
+<br />
+<br />
+<br />
+@if (Model != null && !String.IsNullOrEmpty(Model.Id))
+{
+
+    <div id="map"></div>
+    <script>
+        var map;
+        function initMap() {
+            var truck1 = { lat: @Model.DerniereGeo.latitude, lng: @Model.DerniereGeo.longitude };
+
+
+            var contentString = '<div id="content">' +
+                '<div id="siteNotice">' +
+                '</div>' +
+                '<h1 id="firstHeading" class=" center firstHeading">@Model.Id</h1>' +
+                '<div id="bodyContent">' +
+                '<p>Emplacement <b>@Model.Emplacement</b>.</p>' +
+                '<p>Couleur <b>@Model.Couleur</b>.</p>' +
+                '<p>Batterie <b>@Model.NiveaudeBatterie</b>.</p>' +
+                '<p>Firmware <b>@Model.FirmwareVersion</b>.</p>' +
+                '</div>' +
+                '</div>';
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            var flightPlanCoordinates = [
+            @foreach (var coord in Model.GpsCoords)
+            {
+                @:{lat: @coord.latitude, lng: @coord.longitude},
+
+            }
+            ];
+                        var flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+                });
+
+
+
+
+                    map = new google.maps.Map(document.getElementById('map'), {
+                center: truck1,
+                zoom: 19,
+                mapTypeId: 'satellite'
+
+            });
+                    var marker = new google.maps.Marker({ position: truck1, map: map });
+
+                infowindow.open(map, marker);
+                //marker.addListener('click', function () {
+                //    infowindow.open(map, marker);
+                //});
+
+            flightPath.setMap(map);
+
+            //vue detail
+            var markerlist = [];
+            var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+            var imagepink = {
+                url: 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png',
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(50, 50),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(0, 32)
+            };
+
+
+            @{
+                var query = Model.GpsCoords.OrderBy(x => x.date);
+                var allButTheLastTwoElements = query.Take(query.Count() - 1);
+            }
+             @foreach (var coord in allButTheLastTwoElements)
+             {
+
+                     @:  markerlist[@imarker]  = new google.maps.Marker({
+                      @:  position: { lat: @coord.latitude, lng: @coord.longitude },
+                      @:  map: map,
+
+                    @if(imarker==0) {
+                        @:icon: { url: 'http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png' },
+                    }
+                    else {
+                        @:icon: { url: 'http://maps.google.com/mapfiles/ms/micons/pink-pushpin.png' },
+                    }
+                  //  @: label: '@imarker'
+                      @:     });
+
+                     @:var contentString = '<div id="content"><div id="siteNotice"></div><div id="bodyContent"><p>Date: <b>@coord.date.ToString()</b>.</p></div></div>';
+            @:infowindow = new google.maps.InfoWindow({
+            @:    content: contentString
+            @:});
+                @:markerlist[@imarker].addListener('click', function () {
+                 @:    infowindow.open(map, markerlist[@imarker]);
+                 @:});
+            imarker++;
+             }
+
+
+
+             }
+    </script>
+}
+<form asp-action="Index" method="post">
+    <div>
+        <label asp-for="RequestId"></label>
+        <input asp-for="RequestId" />
+        <span asp-validation-for="RequestId"></span>
+    </div>
+
+    <div>
+        <input type="submit" value="submit" />
+    </div>
+
+</form>
+

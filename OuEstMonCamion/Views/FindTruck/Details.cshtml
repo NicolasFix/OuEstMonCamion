@@ -1,0 +1,81 @@
+﻿@model OuEstMonCamion.Models.TruckModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<br />
+<br />
+<br />
+<br />
+@if (Model != null && !String.IsNullOrEmpty(Model.RequestId))
+{
+
+    <div id="map"></div>
+    <script>
+        var map;
+        function initMap() {
+            var truck1 = { lat: 49.210942, lng: -0.299729 };
+
+
+            var contentString = '<div id="content">' +
+                '<div id="siteNotice">' +
+                '</div>' +
+                '<h1 id="firstHeading" class="firstHeading">@Model.RequestId</h1>' +
+                '<div id="bodyContent">' +
+                '<p>Emplacement <b>@Model.Emplacement</b>.</p>' +
+                '<p>Couleur <b>@Model.Couleur</b>.</p>' +
+                '<p>Batterie <b>@Model.NiveaudeBatterie</b>.</p>' +
+                '</div>' +
+                '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+
+
+            var flightPlanCoordinates = [
+                { lat: 49.210942, lng: -0.299729 },
+                { lat: 49.211607, lng: -0.299602 },
+                { lat: 49.211404, lng: -0.302354 }
+            ];
+            var flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+
+
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: truck1,
+                zoom: 19,
+                mapTypeId: 'satellite'
+
+            });
+            var marker = new google.maps.Marker({ position: truck1, map: map });
+
+            infowindow.open(map, marker);
+            marker.addListener('click', function () {
+                infowindow.open(map, marker);
+            });
+
+            flightPath.setMap(map);
+
+        }
+    </script>
+}
+<form asp-action="Details" method="post">
+    <div>
+        <label asp-for="RequestId"></label>
+        <input asp-for="RequestId" />
+        <span asp-validation-for="RequestId"></span>
+    </div>
+
+    <div>
+        <input type="submit" value="submit" />
+    </div>
+</form>
