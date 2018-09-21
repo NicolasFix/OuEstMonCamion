@@ -90,9 +90,9 @@
             var marker = new google.maps.Marker({ position: truck1, map: map });
 
             infowindow.open(map, marker);
-                //marker.addListener('click', function () {
-                //    infowindow.open(map, marker);
-                //});
+               marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
 
             @if (Model.detail) {
                     @:flightPath.setMap(map);
