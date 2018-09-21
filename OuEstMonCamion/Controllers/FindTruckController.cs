@@ -34,16 +34,22 @@ namespace OuEstMonCamion.Controllers
         [HttpPost]
         public ActionResult Details(TruckFindViewModel trucksvm)
         {
-
-            List<TruckModel> trucks = _truckService.GetTrucks();
-            var trucksToDisplay = trucks.Where(x => x.Couleur.ToLower() == trucksvm.couleur.ToLower()).ToList();
-            trucksvm.Trucks = trucksToDisplay;
-            foreach (var truck in trucksvm.Trucks)
+            try
             {
-                truck.DerniereGeo = truck.GpsCoords.OrderByDescending(x => x.date).FirstOrDefault();
+
+                List<TruckModel> trucks = _truckService.GetTrucks();
+                var trucksToDisplay = trucks.Where(x => x.Couleur.ToLower() == trucksvm.couleur.ToLower()).ToList();
+                trucksvm.Trucks = trucksToDisplay;
+                foreach (var truck in trucksvm.Trucks)
+                {
+                    truck.DerniereGeo = truck.GpsCoords.OrderByDescending(x => x.date).FirstOrDefault();
+                }
+                return View(trucksvm);
             }
-            // string id = truck.RequestId;
-            return View(trucksvm);
+            catch (Exception)
+            {
+                return View(trucksvm);
+            }
         }
         [HttpPost]
         public ActionResult Index(TruckModel truck)
@@ -62,7 +68,6 @@ namespace OuEstMonCamion.Controllers
             }
             catch (Exception)
             {
-
                 return View(truck);
             }
         }
