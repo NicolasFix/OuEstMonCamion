@@ -23,6 +23,8 @@ namespace OuEstMonCamion.Models
         [Display(Name = "Couleur")]
         public string Couleur { get; set; }
 
+        public bool detail { get; set; }
+
         #region moduleGPS
         [Display(Name = "Niveau de batterie")]
         public string NiveaudeBatterie { get; set; }

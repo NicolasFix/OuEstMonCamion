@@ -39,13 +39,23 @@ namespace OuEstMonCamion.Controllers
         [HttpPost]
         public ActionResult Index(TruckModel truck)
         {
-            List<TruckModel> trucks = _truckService.GetTrucks();
-            string id = truck.RequestId;
+            try
+            {
 
-            var truckToDisplay = trucks.FirstOrDefault(x => x.Id == truck.RequestId);
-            truckToDisplay.DerniereGeo = truckToDisplay.GpsCoords.OrderByDescending(x => x.date).FirstOrDefault();
+                List<TruckModel> trucks = _truckService.GetTrucks();
+                string id = truck.RequestId;
 
-            return View(truckToDisplay);
+                var truckToDisplay = trucks.FirstOrDefault(x => x.Id == truck.RequestId);
+                truckToDisplay.DerniereGeo = truckToDisplay.GpsCoords.OrderByDescending(x => x.date).FirstOrDefault();
+                truckToDisplay.detail = truck.detail;
+                return View(truckToDisplay);
+
+            }
+            catch (Exception)
+            {
+
+                return View(truck);
+            }
         }
     }
 }

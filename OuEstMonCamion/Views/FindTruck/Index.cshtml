@@ -36,35 +36,37 @@
             var flightPlanCoordinates = [
             @foreach (var coord in Model.GpsCoords)
             {
-                @:{lat: @coord.latitude, lng: @coord.longitude},
+                @:{ lat: @coord.latitude, lng: @coord.longitude},
 
             }
             ];
-                        var flightPath = new google.maps.Polyline({
+            var flightPath = new google.maps.Polyline({
                 path: flightPlanCoordinates,
                 geodesic: true,
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,
                 strokeWeight: 2
-                });
+            });
 
 
 
 
-                    map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById('map'), {
                 center: truck1,
                 zoom: 19,
                 mapTypeId: 'satellite'
 
             });
-                    var marker = new google.maps.Marker({ position: truck1, map: map });
+            var marker = new google.maps.Marker({ position: truck1, map: map });
 
-                infowindow.open(map, marker);
+            infowindow.open(map, marker);
                 //marker.addListener('click', function () {
                 //    infowindow.open(map, marker);
                 //});
 
-            flightPath.setMap(map);
+            @if (Model.detail) {
+                    @:flightPath.setMap(map);
+                }
 
             //vue detail
             var markerlist = [];
@@ -79,15 +81,16 @@
                 anchor: new google.maps.Point(0, 32)
             };
 
+             @if (Model.detail) { 
 
-            @{
-                var query = Model.GpsCoords.OrderBy(x => x.date);
+
+             var query = Model.GpsCoords.OrderBy(x => x.date);
                 var allButTheLastTwoElements = query.Take(query.Count() - 1);
-            }
-             @foreach (var coord in allButTheLastTwoElements)
+            
+             foreach (var coord in allButTheLastTwoElements)
              {
 
-                     @:  markerlist[@imarker]  = new google.maps.Marker({
+                     @:  markerlist[@imarker] = new google.maps.Marker({
                       @:  position: { lat: @coord.latitude, lng: @coord.longitude },
                       @:  map: map,
 
@@ -101,30 +104,38 @@
                       @:     });
 
                      @:var contentString = '<div id="content"><div id="siteNotice"></div><div id="bodyContent"><p>Date: <b>@coord.date.ToString()</b>.</p></div></div>';
-            @:infowindow = new google.maps.InfoWindow({
-            @:    content: contentString
-            @:});
-                @:markerlist[@imarker].addListener('click', function () {
-                 @:    infowindow.open(map, markerlist[@imarker]);
-                 @:});
+               
+                    @:infowindow = new google.maps.InfoWindow({
+                    @:    content: contentString
+                    @:});
+                    @:markerlist[@imarker].addListener('click', function () {
+                    @:    infowindow.open(map, markerlist[@imarker]);
+                    @:});
+                
             imarker++;
              }
 
-
+        }
 
              }
     </script>
 }
-<form asp-action="Index" method="post">
-    <div>
-        <label asp-for="RequestId"></label>
-        <input asp-for="RequestId" />
-        <span asp-validation-for="RequestId"></span>
-    </div>
+    <form asp-action="Index" method="post">
+        <div class="form-group">
+            <label asp-for="RequestId"></label>
+            <input class="form-control" asp-for="RequestId" />
+            <span asp-validation-for="RequestId"></span>
+        </div>
 
-    <div>
-        <input type="submit" value="submit" />
-    </div>
 
-</form>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" asp-for="detail">
+                <label class="form-check-label" asp-for="detail">détail</label>
+            </div>
+
+        <div class="form-group">
+            <input class="btn btn-primary " type="submit" value="submit" />
+        </div>
+
+    </form>
 
