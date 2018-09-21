@@ -36,20 +36,37 @@
 
 
                     map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 16,
+                        zoom: 14,
                         mapTypeId: 'satellite'
 
                     });
+                    var contentString;
                     var markerlist = [];
+                    var infowindowlist = [];
                     @foreach(var truck in Model.Trucks)
+                    {
+                        if (imarker == 0)
                         {
+                            @:var center = new google.maps.LatLng(@truck.DerniereGeo.latitude, @truck.DerniereGeo.longitude);
+                            @:map.panTo(center);
+                        }
                             @:  markerlist[@imarker] = new google.maps.Marker({
                             @:  position: { lat: @truck.DerniereGeo.latitude, lng: @truck.DerniereGeo.longitude },
                             @:  map: map,
-@:});
+                            @:  });
+
+                         @:contentString = '<div id="content"><div id="siteNotice"></div><div id="bodyContent"><h1 id="firstHeading" class=" text-center firstHeading">@truck.Id</h1><p>Emplacement <b>@truck.Emplacement</b>.</p><p>Couleur <b>@truck.Couleur</b>.</p><p>Batterie <b>@truck.NiveaudeBatterie</b>.</p><p>Firmware <b>@truck.FirmwareVersion</b>.</p><p>Date: <b>@truck.DerniereGeo.date.ToString()</b>.</p></div></div > ';
+
+                        @:infowindowlist[@imarker] = new google.maps.InfoWindow({
+                        @:    content: contentString
+                        @:});
+                        @:markerlist[@imarker].addListener('click', function () {
+                        @:    infowindowlist[@imarker].open(map, markerlist[@imarker]);
+                        @:});
+
                             imarker++;
                         }
-                    
+
                  }
             </script>
         }

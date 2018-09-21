@@ -100,6 +100,7 @@
 
             //vue detail
             var markerlist = [];
+            var infowindowlist = [];
             var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
             var imagepink = {
                 url: 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png',
@@ -135,11 +136,11 @@
 
                      @:var contentString = '<div id="content"><div id="siteNotice"></div><div id="bodyContent"><p>Date: <b>@coord.date.ToString()</b>.</p></div></div>';
 
-                    @:infowindow = new google.maps.InfoWindow({
+                    @:infowindowlist[@imarker] = new google.maps.InfoWindow({
                     @:    content: contentString
                     @:});
                     @:markerlist[@imarker].addListener('click', function () {
-                    @:    infowindow.open(map, markerlist[@imarker]);
+                    @:    infowindowlist[@imarker].open(map, markerlist[@imarker]);
                     @:});
 
             imarker++;
