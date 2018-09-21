@@ -22,6 +22,7 @@ namespace OuEstMonCamion.Models
 
         [Display(Name = "Couleur")]
         public string Couleur { get; set; }
+        
 
         public bool detail { get; set; }
 
@@ -32,5 +33,6 @@ namespace OuEstMonCamion.Models
         public List<GpsCoordModel> GpsCoords { get; set; }
         #endregion
 
+        
     }
 }

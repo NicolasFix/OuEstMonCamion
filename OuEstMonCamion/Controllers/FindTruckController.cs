@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OuEstMonCamion.Models;
 using OuEstMonCamion.Service;
+using OuEstMonCamion.ViewModels;
 
 namespace OuEstMonCamion.Controllers
 {
@@ -26,15 +27,23 @@ namespace OuEstMonCamion.Controllers
         
         public ActionResult Details()
         {
-            TruckModel tm = new TruckModel();
+            TruckFindViewModel tm = new TruckFindViewModel();
             return View(tm);
         }
 
         [HttpPost]
-        public ActionResult Details(TruckModel truck)
+        public ActionResult Details(TruckFindViewModel trucksvm)
         {
-            string id = truck.RequestId;
-            return View(truck);
+
+            List<TruckModel> trucks = _truckService.GetTrucks();
+            var trucksToDisplay = trucks.Where(x => x.Couleur.ToLower() == trucksvm.couleur.ToLower()).ToList();
+            trucksvm.Trucks = trucksToDisplay;
+            foreach (var truck in trucksvm.Trucks)
+            {
+                truck.DerniereGeo = truck.GpsCoords.OrderByDescending(x => x.date).FirstOrDefault();
+            }
+            // string id = truck.RequestId;
+            return View(trucksvm);
         }
         [HttpPost]
         public ActionResult Index(TruckModel truck)

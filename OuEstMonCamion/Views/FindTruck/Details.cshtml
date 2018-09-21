@@ -1,81 +1,60 @@
-﻿@model OuEstMonCamion.Models.TruckModel
+﻿@model OuEstMonCamion.ViewModels.TruckFindViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Recherche détaillée";
+    int imarker = 0;
+    int zoom = 19;
 }
 
 <br />
 <br />
 <br />
 <br />
-@if (Model != null && !String.IsNullOrEmpty(Model.RequestId))
-{
+<div class="row " style="margin-left : 12px;">
+    <div class="col-md-2">
+        <form asp-action="Details" method="post">
+            <div class="form-group">
+                <label asp-for="couleur"></label>
+                <input class="form-control" asp-for="couleur" />
+                <span asp-validation-for="couleur"></span>
+            </div>
 
-    <div id="map"></div>
-    <script>
-        var map;
-        function initMap() {
-            var truck1 = { lat: 49.210942, lng: -0.299729 };
+            <div class="form-group">
+                <input class="btn btn-primary " type="submit" value="Chercher" />
+            </div>
 
-
-            var contentString = '<div id="content">' +
-                '<div id="siteNotice">' +
-                '</div>' +
-                '<h1 id="firstHeading" class="firstHeading">@Model.RequestId</h1>' +
-                '<div id="bodyContent">' +
-                '<p>Emplacement <b>@Model.Emplacement</b>.</p>' +
-                '<p>Couleur <b>@Model.Couleur</b>.</p>' +
-                '<p>Batterie <b>@Model.NiveaudeBatterie</b>.</p>' +
-                '</div>' +
-                '</div>';
-
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
-
-
-
-            var flightPlanCoordinates = [
-                { lat: 49.210942, lng: -0.299729 },
-                { lat: 49.211607, lng: -0.299602 },
-                { lat: 49.211404, lng: -0.302354 }
-            ];
-            var flightPath = new google.maps.Polyline({
-                path: flightPlanCoordinates,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
+        </form>
+    </div>
+    <div class="col-md-8">
+        @if (Model != null && Model.Trucks != null)
+        {
+            <div class="container">
+                <div id="map"></div>
+            </div>
+            <script>
+                var map;
+                function initMap() {
 
 
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 16,
+                        mapTypeId: 'satellite'
 
-
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: truck1,
-                zoom: 19,
-                mapTypeId: 'satellite'
-
-            });
-            var marker = new google.maps.Marker({ position: truck1, map: map });
-
-            infowindow.open(map, marker);
-            marker.addListener('click', function () {
-                infowindow.open(map, marker);
-            });
-
-            flightPath.setMap(map);
-
+                    });
+                    var markerlist = [];
+                    @foreach(var truck in Model.Trucks)
+                        {
+                            @:  markerlist[@imarker] = new google.maps.Marker({
+                            @:  position: { lat: @truck.DerniereGeo.latitude, lng: @truck.DerniereGeo.longitude },
+                            @:  map: map,
+@:});
+                            imarker++;
+                        }
+                    
+                 }
+            </script>
         }
-    </script>
-}
-<form asp-action="Details" method="post">
-    <div>
-        <label asp-for="RequestId"></label>
-        <input asp-for="RequestId" />
-        <span asp-validation-for="RequestId"></span>
     </div>
+</div>
 
-    <div>
-        <input type="submit" value="submit" />
-    </div>
-</form>
+
+
