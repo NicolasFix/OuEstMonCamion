@@ -88,25 +88,15 @@
   },
   {
     "id": "34LC000589",
-    "Emplacement": "",
+    "Emplacement": "4 / 210",
     "Couleur": "Jaune",
     "NiveaudeBatterie": "90%",
     "FirmwareVersion": "1.1",
     "GpsCoords": [
       {
-        "longitude": "-0.303519",
-        "latitude": "49.20937",
+        "longitude": "-0.298259",
+        "latitude": "49.220411",
         "date": "2014-04-23T18:25:43"
-      },
-      {
-        "longitude": "-0.300981",
-        "latitude": "49.212397",
-        "date": "2017-04-23T18:25:43"
-      },
-      {
-        "longitude": "-0.301015",
-        "latitude": "49.215686",
-        "date": "2018-04-23T18:25:43"
       }
     ]
   },
