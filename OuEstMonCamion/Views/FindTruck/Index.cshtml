@@ -48,7 +48,7 @@
             var contentString = '<div id="content">' +
                 '<div id="siteNotice">' +
                 '</div>' +
-                '<h1 id="firstHeading" class=" center firstHeading">@Model.Id</h1>' +
+                '<h1 id="firstHeading" class=" text-center firstHeading">@Model.Id</h1>' +
                 '<div id="bodyContent">' +
                 '<p>Emplacement <b>@Model.Emplacement</b>.</p>' +
                 '<p>Couleur <b>@Model.Couleur</b>.</p>' +
@@ -56,6 +56,9 @@
                 '<p>Firmware <b>@Model.FirmwareVersion</b>.</p>' +
                 '</div>' +
                 '</div>';
+
+            
+
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
             });
